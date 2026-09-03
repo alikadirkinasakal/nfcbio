@@ -81,13 +81,12 @@
             display: none;
         }
 
-        /* Fotoğraf alanı üst kartın (main-card) tam üst sınırına kadar uzatıldı */
         .header-photo-area {
             position: absolute;
             top: 20px;
             left: 16px;
             right: 16px;
-            bottom: calc(100% - 373px); /* main-card'ın üst hizasına tam oturacak şekilde hesaplandı */
+            bottom: calc(100% - 373px);
             border-radius: 28px;
             overflow: hidden;
             z-index: 0;
@@ -100,7 +99,7 @@
         .header-photo-area img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* En boy oranını koruyup alanı tam doldurması için cover yapıldı */
+            object-fit: cover;
             object-position: center;
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
@@ -118,7 +117,7 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
-            margin-top: 155px; /* Fotoğrafın yeni yüksekliğine uyumlu hale getirildi */
+            margin-top: 155px;
         }
 
         .profile-content {
@@ -170,10 +169,6 @@
             background: rgba(0, 0, 0, 0.75);
         }
 
-        .save-contact-btn:active {
-            transform: scale(0.96);
-        }
-
         .social-card {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(30px);
@@ -186,6 +181,7 @@
             flex-direction: column;
             gap: 6px;
             z-index: 1;
+            position: relative; /* Evcil hayvanın pozisyon alabilmesi için eklendi */
         }
 
         .social-row {
@@ -209,10 +205,6 @@
             transform: translateX(4px);
         }
 
-        .social-row:active {
-            transform: scale(0.96);
-        }
-
         .social-icon {
             width: 38px;
             height: 38px;
@@ -231,7 +223,6 @@
         .icon-facebook { background: linear-gradient(135deg, #1877f2 0%, #0a66c2 100%); }
         .icon-phone { background: linear-gradient(135deg, #34c759 0%, #30b750 100%); }
         .icon-email { background: linear-gradient(135deg, #007aff 0%, #0051ba 100%); }
-        .icon-location { background: linear-gradient(135deg, #ff3b30 0%, #ff1744 100%); }
         .icon-iban { background: linear-gradient(135deg, #ff9500 0%, #ff8000 100%); }
 
         .social-details h3 {
@@ -254,31 +245,52 @@
             letter-spacing: 3px;
             font-weight: bold;
             z-index: 1;
+            position: relative; /* Yılanın referans noktası */
         }
 
+        /* --- VIRTUAL PETS (KEDİLER VE YILAN) CSS --- */
+        .pet {
+            position: absolute;
+            font-size: 10px; /* Çok küçük boyut */
+            z-index: 10;
+            pointer-events: none; /* Tıklamaları engellemesin */
+            animation: patrol linear infinite;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+
+        /* 1. Kedi (Ana kartın üstünde) */
+        .pet-cat1 {
+            top: -12px; /* Kartın tam üst sınırına oturması için */
+            animation-duration: 12s;
+        }
+
+        /* 2. Kedi (Sosyal medya kartının üstünde) */
+        .pet-cat2 {
+            top: -12px; 
+            animation-duration: 9s;
+            animation-delay: -3s; /* Farklı zamanlarda hareket etmeleri için */
+        }
+
+        /* Yılan (En altta) */
+        .pet-snake {
+            bottom: 15px; /* Alt çerçevenin zeminine yakın */
+            animation-duration: 15s;
+        }
+
+        /* Devriye Gezme Animasyonu (Sağa Sola Yürüme) */
+        @keyframes patrol {
+            0%   { left: 5%; transform: scaleX(-1); }  /* Sağa doğru bakarak başla */
+            49%  { left: 85%; transform: scaleX(-1); } /* Sağa yürü */
+            50%  { left: 85%; transform: scaleX(1); }  /* Yönünü sola çevir */
+            99%  { left: 5%; transform: scaleX(1); }   /* Sola yürü */
+            100% { left: 5%; transform: scaleX(-1); }  /* Tekrar sağa dön */
+        }
+        /* ------------------------------------------ */
+
         @media (max-width: 480px) {
-            body {
-                background: #000;
-            }
-
-            .phone-mockup {
-                border: none;
-                border-radius: 0;
-                max-height: 100vh;
-                max-height: 100dvh;
-                box-shadow: none;
-                height: 100vh;
-                height: 100dvh;
-            }
-
-            .phone-notch {
-                display: none;
-            }
-
-            .phone-screen {
-                padding-top: 16px;
-                padding-bottom: 16px;
-            }
+            body { background: #000; }
+            .phone-mockup { border: none; border-radius: 0; max-height: 100vh; height: 100vh; box-shadow: none; }
+            .phone-screen { padding-top: 16px; padding-bottom: 16px; }
         }
 
         #toast {
@@ -298,14 +310,13 @@
             font-size: 13px;
             font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            transition: visibility 0.2s, opacity 0.2s;
             opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
         }
 
         #toast.show {
-            visibility: hidden;
-            opacity: 0;
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
@@ -325,6 +336,8 @@
             </div>
 
             <div class="main-card">
+                <div class="pet pet-cat1">🐈</div>
+                
                 <div class="profile-content">
                     <div class="profile-info">
                         <h1>{{ musteri.ad_soyad }}</h1>
@@ -342,6 +355,8 @@
             </div>
 
             <div class="social-card">
+                <div class="pet pet-cat2">🐈‍⬛</div>
+
                 {% if musteri.whatsapp %}
                     <a href="https://wa.me/{{ musteri.whatsapp }}" target="_blank" class="social-row">
                         <div class="social-icon icon-whatsapp">
@@ -429,11 +444,14 @@
                             <h3>IBAN</h3>
                             <p>{{ musteri.iban }}</p>
                         </div>
-                    </a>
+                    </div>
                 {% endif %}
             </div>
 
-            <div class="footer-brand">((( NFC DIGITAL CARD )))</div>
+            <div class="footer-brand">
+                <div class="pet pet-snake">🐍</div>
+                ((( NFC DIGITAL CARD )))
+            </div>
         </div>
     </div>
 
