@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ musteri.ad_soyad }} - Dijital Kartvizit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-cover-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            filter: blur(10px) brightness(0.45);
+            transform: scale(1.1);
+        }
+
+        .phone-mockup {
+            width: 100%;
+            max-width: 390px;
+            height: 840px;
+            max-height: 92vh;
+            background: rgba(18, 18, 22, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 46px;
+            border: 10px solid #2a2a2e;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 
+                        inset 0 0 10px rgba(0, 0, 0, 0.8);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .phone-notch {
+            display: none;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 16px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 12px;
+            scrollbar-width: none;
+            position: relative;
+        }
+
+        .phone-screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Fotoğraf alanı üst kartın (main-card) tam üst sınırına kadar uzatıldı */
+        .header-photo-area {
+            position: absolute;
+            top: 20px;
+            left: 16px;
+            right: 16px;
+            bottom: calc(100% - 373px); /* main-card'ın üst hizasına tam oturacak şekilde hesaplandı */
+            border-radius: 28px;
+            overflow: hidden;
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .header-photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* En boy oranını koruyup alanı tam doldurması için cover yapıldı */
+            object-position: center;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border-radius: 32px;
+            padding: 16px 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            margin-top: 155px; /* Fotoğrafın yeni yüksekliğine uyumlu hale getirildi */
+        }
+
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .profile-info h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-info .title {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .save-contact-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .save-contact-btn:hover {
+            background: rgba(0, 0, 0, 0.75);
+        }
+
+        .save-contact-btn:active {
+            transform: scale(0.96);
+        }
+
+        .social-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border-radius: 32px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 1;
+        }
+
+        .social-row {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .social-row:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .social-row:active {
+            transform: scale(0.96);
+        }
+
+        .social-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #ffffff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon-whatsapp { background: linear-gradient(135deg, #25d366 0%, #20ba5f 100%); }
+        .icon-instagram { background: linear-gradient(135deg, #feda75 0%, #fa7e1e 25%, #d92e7f 50%, #9b36b7 75%, #515bd4 100%); }
+        .icon-facebook { background: linear-gradient(135deg, #1877f2 0%, #0a66c2 100%); }
+        .icon-phone { background: linear-gradient(135deg, #34c759 0%, #30b750 100%); }
+        .icon-email { background: linear-gradient(135deg, #007aff 0%, #0051ba 100%); }
+        .icon-location { background: linear-gradient(135deg, #ff3b30 0%, #ff1744 100%); }
+        .icon-iban { background: linear-gradient(135deg, #ff9500 0%, #ff8000 100%); }
+
+        .social-details h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1px;
+        }
+
+        .social-details p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-brand {
+            text-align: center;
+            padding: 6px 0 2px 0;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 3px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background: #000;
+            }
+
+            .phone-mockup {
+                border: none;
+                border-radius: 0;
+                max-height: 100vh;
+                max-height: 100dvh;
+                box-shadow: none;
+                height: 100vh;
+                height: 100dvh;
+            }
+
+            .phone-notch {
+                display: none;
+            }
+
+            .phone-screen {
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+        }
+
+        #toast {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
+            text-align: center;
+            border-radius: 16px;
+            padding: 12px 24px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: visibility 0.2s, opacity 0.2s;
+            opacity: 0;
+        }
+
+        #toast.show {
+            visibility: hidden;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=80" class="bg-cover-image" alt="Background Cover">
+
+    <div class="phone-mockup">
+        <div class="phone-notch"></div>
+
+        <div class="phone-screen">
+            <div class="header-photo-area">
+                {% if musteri.profil_fotografi %}
+                    <img src="{{ musteri.profil_fotografi.url }}" alt="Header Photo">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80" alt="Header Photo">
+                {% endif %}
+            </div>
+
+            <div class="main-card">
+                <div class="profile-content">
+                    <div class="profile-info">
+                        <h1>{{ musteri.ad_soyad }}</h1>
+                        {% if musteri.unvan %}
+                            <p class="title">{{ musteri.unvan }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if musteri.telefon %}
+                        <a href="tel:{{ musteri.telefon }}" class="save-contact-btn">
+                            <i class="fa-solid fa-user-plus"></i> Rehbere Kaydet
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="social-card">
+                {% if musteri.whatsapp %}
+                    <a href="https://wa.me/{{ musteri.whatsapp }}" target="_blank" class="social-row">
+                        <div class="social-icon icon-whatsapp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>WhatsApp</h3>
+                            <p>Mesaj Gönder</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.instagram %}
+                    <a href="{{ musteri.instagram }}" target="_blank" class="social-row">
+                        <div class="social-icon icon-instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>Instagram</h3>
+                            <p>Profili Görüntüle</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.facebook %}
+                    <a href="{{ musteri.facebook }}" target="_blank" class="social-row">
+                        <div class="social-icon icon-facebook">
+                            <i class="fa-brands fa-facebook"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>Facebook</h3>
+                            <p>Profili Görüntüle</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.telefon %}
+                    <a href="tel:{{ musteri.telefon }}" class="social-row">
+                        <div class="social-icon icon-phone">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>Telefon</h3>
+                            <p>Ara</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.email %}
+                    <a href="mailto:{{ musteri.email }}" class="social-row">
+                        <div class="social-icon icon-email">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>E-Mail</h3>
+                            <p>Mesaj Gönder</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.google_maps %}
+                    <a href="{{ musteri.google_maps }}" target="_blank" class="social-row">
+                        <div class="social-icon" style="background: #ffffff; padding: 6px;">
+                            <svg viewBox="0 0 24 24" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                                <path fill="#EA4335" d="M12 2v7h7c0-3.87-3.13-7-7-7z"/>
+                                <path fill="#FBBC05" d="M5 9c0 3.87 3.13 7 7 7V2C6.48 2 5 6.48 5 9z"/>
+                                <path fill="#34A853" d="M12 16c3.87 0 7-3.13 7-7h-7v7z"/>
+                                <circle fill="#FFFFFF" cx="12" cy="9" r="2.5"/>
+                            </svg>
+                        </div>
+                        <div class="social-details">
+                            <h3>Konum</h3>
+                            <p>Haritada Aç</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                {% if musteri.iban %}
+                    <div onclick="copyToClipboard('{{ musteri.iban }}')" class="social-row">
+                        <div class="social-icon icon-iban">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="social-details">
+                            <h3>IBAN</h3>
+                            <p>{{ musteri.iban }}</p>
+                        </div>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="footer-brand">((( NFC DIGITAL CARD )))</div>
+        </div>
+    </div>
+
+    <div id="toast">✓ IBAN Panoya Kopyalandı!</div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                var toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(function() {
+                    toast.className = toast.className.replace("show", "");
+                }, 2000);
+            }, function(err) {
+                console.error('Kopyalanamadı: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
