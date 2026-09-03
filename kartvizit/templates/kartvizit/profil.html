@@ -98,24 +98,24 @@
         .phone-screen {
             width: 100%;
             height: 100%;
-            overflow-y: scroll; /* Yaylanma hissi için scroll yapıldı */
+            overflow-y: scroll;
             overflow-x: hidden;
-            padding: 20px 16px 20px 16px;
+            /* Alt ve üstten 2-3 cm (80px) ekstra kaydırma boşluğu eklendi */
+            padding: 80px 16px 80px 16px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             gap: 12px;
             scrollbar-width: none;
             position: relative;
-            -webkit-overflow-scrolling: touch; /* Mobilde doğal esneme hissi */
-            overscroll-behavior-y: auto; /* Yaylanmaya izin verir */
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: auto;
         }
 
         .phone-screen::-webkit-scrollbar {
             display: none;
         }
 
-        /* İçerik kısa olsa bile yaylanmayı garanti altına almak için */
         .phone-screen::after {
             content: '';
             display: block;
@@ -125,7 +125,7 @@
 
         .header-photo-area {
             position: absolute;
-            top: 20px;
+            top: 80px; /* Üstteki 80px kaydırma boşluğuna uyum sağlaması için güncellendi */
             left: 16px;
             right: 16px;
             bottom: calc(100% - 373px);
@@ -159,7 +159,7 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
-            margin-top: 155px;
+            margin-top: 95px; /* Fotoğrafla kusursuz hizalamayı sürdürmek için güncellendi */
         }
 
         .profile-content {
@@ -328,7 +328,7 @@
         @media (max-width: 480px) {
             body { background: #000; }
             .phone-mockup { border: none; border-radius: 0; max-height: 100vh; height: 100vh; box-shadow: none; }
-            .phone-screen { padding-top: 16px; padding-bottom: 16px; }
+            .phone-screen { padding-top: 80px; padding-bottom: 80px; }
         }
 
         #toast {
