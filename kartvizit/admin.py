@@ -7,11 +7,11 @@ from .models import (
 
 class TelefonInline(admin.TabularInline):
     model = MusteriTelefon
-    extra = 1
+    extra = 6
 
 class WhatsappInline(admin.TabularInline):
     model = MusteriWhatsapp
-    extra = 1
+    extra = 6
 
 class EmailInline(admin.TabularInline):
     model = MusteriEmail
@@ -31,7 +31,7 @@ class GoogleMapsInline(admin.TabularInline):
 
 class IbanInline(admin.TabularInline):
     model = MusteriIban
-    extra = 1
+    extra = 5
 
 @admin.register(Musteri)
 class MusteriAdmin(admin.ModelAdmin):
