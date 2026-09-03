@@ -328,11 +328,25 @@
         }
 
         @media (max-width: 480px) {
-            body { background: #000; }
-            .phone-mockup { border: none; border-radius: 0; max-height: 100vh; height: 100vh; box-shadow: none; }
-            .screen-content { padding-top: 16px; padding-bottom: 16px; }
-        }
-
+    body { background: #000; }
+    .phone-mockup { 
+        border: none; 
+        border-radius: 0; 
+        max-height: 100vh; 
+        height: 100vh; 
+        box-shadow: none; 
+    }
+    .screen-content { 
+        padding-top: 16px; 
+        padding-bottom: 16px; 
+    }
+    
+    /* Fotoğraf ile üst kısım arasına her zaman ~0.5cm (25px) boşluk ekler */
+    /* env(safe-area-inset-top) çentikli telefonlarda arayüzün fotoğrafı kesmesini önler */
+    .header-photo-area {
+        top: max(25px, env(safe-area-inset-top));
+    }
+}
         #toast {
             visibility: hidden;
             background-color: rgba(0, 0, 0, 0.8);
