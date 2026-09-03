@@ -67,26 +67,25 @@
         .spider-container {
             position: absolute;
             top: 0;
-            right: 25%; /* Sağ tarafa yakın bir yerden sarkacak */
+            right: 25%;
             z-index: 20;
             display: flex;
             flex-direction: column;
             align-items: center;
             pointer-events: none;
-            /* Hafifçe sağa sola sallanma animasyonu */
             animation: swing 4s ease-in-out infinite alternate;
             transform-origin: top center;
         }
 
         .web-line {
             width: 1.5px;
-            height: 70px; /* Yaklaşık 3-4 cm sarkma mesafesi */
+            height: 70px;
             background-color: rgba(255, 255, 255, 0.3);
         }
 
         .spider {
             font-size: 14px;
-            margin-top: -3px; /* Örümceği ağa tam bağlamak için */
+            margin-top: -3px;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8));
         }
 
@@ -99,7 +98,7 @@
         .phone-screen {
             width: 100%;
             height: 100%;
-            overflow-y: auto;
+            overflow-y: scroll; /* Yaylanma hissi için scroll yapıldı */
             overflow-x: hidden;
             padding: 20px 16px 20px 16px;
             display: flex;
@@ -108,10 +107,20 @@
             gap: 12px;
             scrollbar-width: none;
             position: relative;
+            -webkit-overflow-scrolling: touch; /* Mobilde doğal esneme hissi */
+            overscroll-behavior-y: auto; /* Yaylanmaya izin verir */
         }
 
         .phone-screen::-webkit-scrollbar {
             display: none;
+        }
+
+        /* İçerik kısa olsa bile yaylanmayı garanti altına almak için */
+        .phone-screen::after {
+            content: '';
+            display: block;
+            min-height: 1px; 
+            flex-shrink: 0;
         }
 
         .header-photo-area {
@@ -284,39 +293,35 @@
         /* --- VIRTUAL PETS (KEDİ, KÖPEK, YILAN) CSS --- */
         .pet {
             position: absolute;
-            font-size: 10px; /* Çok küçük boyut */
+            font-size: 10px;
             z-index: 10;
-            pointer-events: none; /* Tıklamaları engellemesin */
+            pointer-events: none;
             animation: patrol linear infinite;
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* 1. Kedi (Ana kartın üstünde) - YAVAŞLATILDI */
         .pet-cat1 {
             top: -12px;
             animation-duration: 24s;
         }
 
-        /* 2. Köpek (Ortadaki sosyal medya kartının üstünde) - YAVAŞLATILDI */
         .pet-dog {
             top: -12px; 
             animation-duration: 20s;
-            animation-delay: -5s; /* Kediyle aynı hizada olmamaları için */
+            animation-delay: -5s;
         }
 
-        /* Yılan (En altta) - YAVAŞLATILDI */
         .pet-snake {
             bottom: 15px; 
             animation-duration: 30s;
         }
 
-        /* Devriye Gezme Animasyonu (Sağa Sola Yürüme) */
         @keyframes patrol {
-            0%   { left: 5%; transform: scaleX(-1); }  /* Sağa doğru bakarak başla */
-            49%  { left: 85%; transform: scaleX(-1); } /* Sağa yürü */
-            50%  { left: 85%; transform: scaleX(1); }  /* Yönünü sola çevir */
-            99%  { left: 5%; transform: scaleX(1); }   /* Sola yürü */
-            100% { left: 5%; transform: scaleX(-1); }  /* Tekrar sağa dön */
+            0%   { left: 5%; transform: scaleX(-1); }
+            49%  { left: 85%; transform: scaleX(-1); }
+            50%  { left: 85%; transform: scaleX(1); }
+            99%  { left: 5%; transform: scaleX(1); }
+            100% { left: 5%; transform: scaleX(-1); }
         }
         /* ------------------------------------------ */
 
@@ -359,7 +364,6 @@
     <div class="phone-mockup">
         <div class="phone-notch"></div>
         
-        <!-- SARKAN ÖRÜMCEK BURADA (Çerçevenin tepesinden sarkıyor) -->
         <div class="spider-container">
             <div class="web-line"></div>
             <div class="spider">🕷️</div>
@@ -375,7 +379,6 @@
             </div>
 
             <div class="main-card">
-                <!-- KEDİ BURADA YÜRÜYOR -->
                 <div class="pet pet-cat1">🐈</div>
                 
                 <div class="profile-content">
@@ -395,7 +398,6 @@
             </div>
 
             <div class="social-card">
-                <!-- KÖPEK BURADA YÜRÜYOR -->
                 <div class="pet pet-dog">🐕</div>
 
                 {% if musteri.whatsapp %}
@@ -490,7 +492,6 @@
             </div>
 
             <div class="footer-brand">
-                <!-- YILAN BURADA SÜRÜNÜYOR -->
                 <div class="pet pet-snake">🐍</div>
                 ((( NFC DIGITAL CARD )))
             </div>
