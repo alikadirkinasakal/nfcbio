@@ -581,22 +581,12 @@
             // Doğal geri dönüş eğrisi
             contentArea.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
 
-            if (currentY >= REFRESH_THRESHOLD) {
-                // Yenileme durumu: Sabitle ve sayfayı yenile
-                contentArea.style.transform = `translateY(${REFRESH_THRESHOLD / 2}px)`
-                ptrIcon.classList.add('fa-spin');
-                
-                setTimeout(() => {
-                    window.location.reload();
-                }, 600);
-            } else {
-                // Sınır geçilmediyse geri yaylandır (Snap back)
-                contentArea.style.transform = 'translateY(0)';
-                setTimeout(() => {
-                    ptrIndicator.style.opacity = 0;
-                    ptrIcon.style.transform = 'rotate(0deg)';
-                }, 300);
-            }
+          // Ne kadar çekilirse çekilsin sayfayı eski konumuna yaylandır
+contentArea.style.transform = 'translateY(0)';
+setTimeout(() => {
+    ptrIndicator.style.opacity = 0;
+    ptrIcon.style.transform = 'rotate(0deg)';
+}, 300);
             
             currentY = 0;
         });
