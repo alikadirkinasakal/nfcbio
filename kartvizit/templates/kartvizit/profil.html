@@ -103,7 +103,7 @@
             scrollbar-width: none;
             position: relative;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain; /* Tarayıcının varsayılan yenilemesini engeller, kendi yapımızı kullanırız */
+            overscroll-behavior-y: contain;
         }
 
         .phone-screen::-webkit-scrollbar {
@@ -116,7 +116,7 @@
             padding: 20px 16px;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            /* YENİ: flex-end kaldırıldı. İçeriğin dinamik sıkışması için varsayılan akış kullanılacak */
             gap: 12px;
             position: relative;
             transform: translateY(0);
@@ -139,11 +139,13 @@
         /* ----------------------------------------------- */
 
         .header-photo-area {
-            position: absolute;
-            top: 20px;
-            left: 16px;
-            right: 16px;
-            height: 353px; /* Sabit yükseklik, wrapper içi stabilite sağlar */
+            /* YENİ: Absolute yerine flex akışına dahil edildi. */
+            position: relative;
+            width: 100%;
+            /* 353px boyutunu korur, ancak alan daralırsa (150px'e kadar) küçülmesine izin verir */
+            flex: 0 1 353px;
+            max-height: 353px;
+            min-height: 150px;
             border-radius: 28px;
             overflow: hidden;
             z-index: 0;
@@ -151,6 +153,8 @@
             align-items: center;
             justify-content: center;
             background: rgba(0, 0, 0, 0.2);
+            /* gap:12px ile toplanıp tam 30px boşluk oluşturması için 18px eklendi */
+            margin-bottom: 18px; 
         }
 
         .header-photo-area img {
@@ -162,12 +166,10 @@
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
         }
 
-      .main-card {
-            /* Saydamlık 2 kat artırıldı (0.12 yerine 0.06 yapıldı) */
+        .main-card {
             background: rgba(255, 255, 255, 0.02); 
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            /* Çerçevesi de daha şeffaf ve uyumlu hale getirildi */
             border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             border-radius: 32px;
@@ -176,7 +178,9 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
-            margin-top: 155px;
+            /* YENİ: Sabit 155px marj yerine alanı doldurarak kartları aşağıda tutar. 
+               Kutucuklar çoğaldığında esneyerek görseli yukarı doğru küçültür. */
+            margin-top: auto; 
         }
 
         .profile-content {
@@ -330,25 +334,26 @@
         }
 
         @media (max-width: 480px) {
-    body { background: #000; }
-    .phone-mockup { 
-        border: none; 
-        border-radius: 0; 
-        max-height: 100vh; 
-        height: 100vh; 
-        box-shadow: none; 
-    }
-    .screen-content { 
-        padding-top: 16px; 
-        padding-bottom: 16px; 
-    }
-    
-    /* Fotoğraf ile üst kısım arasına her zaman ~0.5cm (25px) boşluk ekler */
-    /* env(safe-area-inset-top) çentikli telefonlarda arayüzün fotoğrafı kesmesini önler */
-    .header-photo-area {
-        top: 50px;
-    }
-}
+            body { background: #000; }
+            .phone-mockup { 
+                border: none; 
+                border-radius: 0; 
+                max-height: 100vh; 
+                height: 100vh; 
+                box-shadow: none; 
+            }
+            .screen-content { 
+                padding-top: 16px; 
+                padding-bottom: 16px; 
+            }
+            
+            /* Fotoğraf ile üst kısım arasına her zaman ~0.5cm (25px) boşluk ekler */
+            .header-photo-area {
+                /* Top 50px silindi, yerine relative sisteme uygun hale getirildi. */
+                margin-top: env(safe-area-inset-top, 25px);
+            }
+        }
+        
         #toast {
             visibility: hidden;
             background-color: rgba(0, 0, 0, 0.8);
@@ -550,15 +555,14 @@
         let currentY = 0;
         let isPulling = false;
         
-        const REFRESH_THRESHOLD = 75; // Yenilenmenin tetikleneceği pixel sınırı
-        const RESISTANCE = 0.4;       // Fiziksel direnç oranı (daha düşük değer daha sert yaylanma)
+        const REFRESH_THRESHOLD = 75;
+        const RESISTANCE = 0.4;
 
         scrollArea.addEventListener('touchstart', (e) => {
-            // Sadece en üstte iken harekete izin ver
             if (scrollArea.scrollTop <= 0) {
                 startY = e.touches[0].clientY;
                 isPulling = true;
-                contentArea.style.transition = 'none'; // Çekerken anlık takip için animasyonu kapat
+                contentArea.style.transition = 'none';
             }
         }, { passive: true });
 
@@ -568,22 +572,19 @@
             const y = e.touches[0].clientY;
             const dy = y - startY;
 
-            // Sadece aşağı doğru çekiyorsa
             if (dy > 0 && scrollArea.scrollTop <= 0) {
-                if (e.cancelable) e.preventDefault(); // Varsayılan kaydırma bozulmasını önle
+                if (e.cancelable) e.preventDefault();
                 
                 currentY = dy * RESISTANCE;
                 
-                // İçeriği aşağı kaydır
                 contentArea.style.transform = `translateY(${currentY}px)`;
                 
-                // İkonu döndür ve görünür kıl
                 const progress = Math.min(currentY / REFRESH_THRESHOLD, 1);
                 ptrIndicator.style.opacity = progress;
                 ptrIcon.style.transform = `rotate(${progress * 180}deg)`;
 
                 if (currentY >= REFRESH_THRESHOLD) {
-                    ptrIndicator.style.color = '#ffffff'; // Sınırı geçince ikon parlak olur
+                    ptrIndicator.style.color = '#ffffff';
                 } else {
                     ptrIndicator.style.color = 'rgba(255, 255, 255, 0.6)';
                 }
@@ -594,15 +595,13 @@
             if (!isPulling) return;
             isPulling = false;
 
-            // Doğal geri dönüş eğrisi
             contentArea.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
 
-          // Ne kadar çekilirse çekilsin sayfayı eski konumuna yaylandır
-contentArea.style.transform = 'translateY(0)';
-setTimeout(() => {
-    ptrIndicator.style.opacity = 0;
-    ptrIcon.style.transform = 'rotate(0deg)';
-}, 300);
+            contentArea.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                ptrIndicator.style.opacity = 0;
+                ptrIcon.style.transform = 'rotate(0deg)';
+            }, 300);
             
             currentY = 0;
         });
