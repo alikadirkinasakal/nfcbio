@@ -1,11 +1,47 @@
 from django.contrib import admin
-from .models import Musteri, MusteriLink
+from .models import (
+    Musteri, MusteriTelefon, MusteriWhatsapp, 
+    MusteriEmail, MusteriInstagram, MusteriFacebook, 
+    MusteriGoogleMaps, MusteriIban
+)
 
-class MusteriLinkInline(admin.TabularInline):
-    model = MusteriLink
-    extra = 1  # Her seferinde 1 boş satır ve ekleme butonu getirir
+class TelefonInline(admin.TabularInline):
+    model = MusteriTelefon
+    extra = 1
+
+class WhatsappInline(admin.TabularInline):
+    model = MusteriWhatsapp
+    extra = 1
+
+class EmailInline(admin.TabularInline):
+    model = MusteriEmail
+    extra = 1
+
+class InstagramInline(admin.TabularInline):
+    model = MusteriInstagram
+    extra = 1
+
+class FacebookInline(admin.TabularInline):
+    model = MusteriFacebook
+    extra = 1
+
+class GoogleMapsInline(admin.TabularInline):
+    model = MusteriGoogleMaps
+    extra = 1
+
+class IbanInline(admin.TabularInline):
+    model = MusteriIban
+    extra = 1
 
 @admin.register(Musteri)
 class MusteriAdmin(admin.ModelAdmin):
     list_display = ('ad_soyad', 'unvan', 'url_slug')
-    inlines = [MusteriLinkInline]
+    inlines = [
+        TelefonInline, 
+        WhatsappInline, 
+        EmailInline, 
+        InstagramInline, 
+        FacebookInline, 
+        GoogleMapsInline, 
+        IbanInline
+    ]

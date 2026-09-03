@@ -19,21 +19,31 @@ class Musteri(models.Model):
                 img.thumbnail(output_size)
                 img.save(self.profil_fotografi.path, quality=85)
 
-# Bütün alanlar için artı (+) butonuna basılarak çoğaltılabilen esnek model
-class MusteriLink(models.Model):
-    TUR_SECENEKLERI = (
-        ('telefon', 'Telefon'),
-        ('whatsapp', 'WhatsApp'),
-        ('email', 'E-Posta'),
-        ('instagram', 'Instagram'),
-        ('facebook', 'Facebook'),
-        ('google_maps', 'Google Maps'),
-        ('iban', 'IBAN'),
-    )
+# Her alan için ayrı alt modeller (Kendi + butonları olması için)
+class MusteriTelefon(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='telefonlar')
+    telefon = models.CharField(max_length=20, verbose_name="Telefon Numarası")
 
-    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='linkler')
-    tur = models.CharField(max_length=20, choices=TUR_SECENEKLERI, verbose_name="Alan Türü")
-    deger = models.CharField(max_length=255, verbose_name="Değer / Numara / Link")
+class MusteriWhatsapp(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='whatsapplar')
+    whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Numarası")
 
-    def __str__(self):
-        return f"{self.get_tur_display()} - {self.deger}"
+class MusteriEmail(models.Model):
+    musteri = models.ForeignKey(Musteri, on_date=models.CASCADE, related_name='emailler')
+    email = models.EmailField(verbose_name="E-Posta Adresi")
+
+class MusteriInstagram(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='instagramlar')
+    instagram = models.URLField(verbose_name="Instagram Profil Linki")
+
+class MusteriFacebook(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='facebooklar')
+    facebook = models.URLField(verbose_name="Facebook Profil Linki")
+
+class MusteriGoogleMaps(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='haritalar')
+    google_maps = models.URLField(verbose_name="Google Maps Konum Linki")
+
+class MusteriIban(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='ibanlar')
+    iban = models.CharField(max_length=50, verbose_name="IBAN Numarası")
