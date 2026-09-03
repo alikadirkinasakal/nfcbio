@@ -100,35 +100,50 @@
             height: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
-            /* Alt ve üstten 2-3 cm (80px) ekstra kaydırma boşluğu eklendi */
-            padding: 80px 16px 80px 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            gap: 12px;
             scrollbar-width: none;
             position: relative;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: auto;
+            overscroll-behavior-y: contain; /* Tarayıcının varsayılan yenilemesini engeller, kendi yapımızı kullanırız */
         }
 
         .phone-screen::-webkit-scrollbar {
             display: none;
         }
 
-        .phone-screen::after {
-            content: '';
-            display: block;
-            min-height: 1px; 
-            flex-shrink: 0;
+        /* --- PULL TO REFRESH & NATURAL BOUNCE WRAPPER --- */
+        .screen-content {
+            min-height: 100%;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 12px;
+            position: relative;
+            transform: translateY(0);
+            will-change: transform;
         }
+
+        .ptr-indicator {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 20px;
+            opacity: 0;
+            z-index: 100;
+        }
+        /* ----------------------------------------------- */
 
         .header-photo-area {
             position: absolute;
-            top: 80px; /* Üstteki 80px kaydırma boşluğuna uyum sağlaması için güncellendi */
+            top: 20px;
             left: 16px;
             right: 16px;
-            bottom: calc(100% - 373px);
+            height: 353px; /* Sabit yükseklik, wrapper içi stabilite sağlar */
             border-radius: 28px;
             overflow: hidden;
             z-index: 0;
@@ -159,7 +174,7 @@
             display: flex;
             flex-direction: column;
             z-index: 1;
-            margin-top: 95px; /* Fotoğrafla kusursuz hizalamayı sürdürmek için güncellendi */
+            margin-top: 155px;
         }
 
         .profile-content {
@@ -300,21 +315,9 @@
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        .pet-cat1 {
-            top: -12px;
-            animation-duration: 24s;
-        }
-
-        .pet-dog {
-            top: -12px; 
-            animation-duration: 20s;
-            animation-delay: -5s;
-        }
-
-        .pet-snake {
-            bottom: 15px; 
-            animation-duration: 30s;
-        }
+        .pet-cat1 { top: -12px; animation-duration: 24s; }
+        .pet-dog { top: -12px; animation-duration: 20s; animation-delay: -5s; }
+        .pet-snake { bottom: 15px; animation-duration: 30s; }
 
         @keyframes patrol {
             0%   { left: 5%; transform: scaleX(-1); }
@@ -323,12 +326,11 @@
             99%  { left: 5%; transform: scaleX(1); }
             100% { left: 5%; transform: scaleX(-1); }
         }
-        /* ------------------------------------------ */
 
         @media (max-width: 480px) {
             body { background: #000; }
             .phone-mockup { border: none; border-radius: 0; max-height: 100vh; height: 100vh; box-shadow: none; }
-            .phone-screen { padding-top: 80px; padding-bottom: 80px; }
+            .screen-content { padding-top: 16px; padding-bottom: 16px; }
         }
 
         #toast {
@@ -369,131 +371,139 @@
             <div class="spider">🕷️</div>
         </div>
 
-        <div class="phone-screen">
-            <div class="header-photo-area">
-                {% if musteri.profil_fotografi %}
-                    <img src="{{ musteri.profil_fotografi.url }}" alt="Header Photo">
-                {% else %}
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80" alt="Header Photo">
-                {% endif %}
-            </div>
-
-            <div class="main-card">
-                <div class="pet pet-cat1">🐈</div>
+        <div class="phone-screen" id="scroll-area">
+            <!-- PULL TO REFRESH WRAPPER -->
+            <div class="screen-content" id="content-area">
                 
-                <div class="profile-content">
-                    <div class="profile-info">
-                        <h1>{{ musteri.ad_soyad }}</h1>
-                        {% if musteri.unvan %}
-                            <p class="title">{{ musteri.unvan }}</p>
-                        {% endif %}
-                    </div>
+                <div class="ptr-indicator">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </div>
 
-                    {% if musteri.telefon %}
-                        <a href="tel:{{ musteri.telefon }}" class="save-contact-btn">
-                            <i class="fa-solid fa-user-plus"></i> Rehbere Kaydet
-                        </a>
+                <div class="header-photo-area">
+                    {% if musteri.profil_fotografi %}
+                        <img src="{{ musteri.profil_fotografi.url }}" alt="Header Photo">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80" alt="Header Photo">
                     {% endif %}
                 </div>
-            </div>
 
-            <div class="social-card">
-                <div class="pet pet-dog">🐕</div>
+                <div class="main-card">
+                    <div class="pet pet-cat1">🐈</div>
+                    
+                    <div class="profile-content">
+                        <div class="profile-info">
+                            <h1>{{ musteri.ad_soyad }}</h1>
+                            {% if musteri.unvan %}
+                                <p class="title">{{ musteri.unvan }}</p>
+                            {% endif %}
+                        </div>
 
-                {% if musteri.whatsapp %}
-                    <a href="https://wa.me/{{ musteri.whatsapp }}" target="_blank" class="social-row">
-                        <div class="social-icon icon-whatsapp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>WhatsApp</h3>
-                            <p>Mesaj Gönder</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.instagram %}
-                    <a href="{{ musteri.instagram }}" target="_blank" class="social-row">
-                        <div class="social-icon icon-instagram">
-                            <i class="fa-brands fa-instagram"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>Instagram</h3>
-                            <p>Profili Görüntüle</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.facebook %}
-                    <a href="{{ musteri.facebook }}" target="_blank" class="social-row">
-                        <div class="social-icon icon-facebook">
-                            <i class="fa-brands fa-facebook"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>Facebook</h3>
-                            <p>Profili Görüntüle</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.telefon %}
-                    <a href="tel:{{ musteri.telefon }}" class="social-row">
-                        <div class="social-icon icon-phone">
-                            <i class="fa-solid fa-phone"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>Telefon</h3>
-                            <p>Ara</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.email %}
-                    <a href="mailto:{{ musteri.email }}" class="social-row">
-                        <div class="social-icon icon-email">
-                            <i class="fa-solid fa-envelope"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>E-Mail</h3>
-                            <p>Mesaj Gönder</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.google_maps %}
-                    <a href="{{ musteri.google_maps }}" target="_blank" class="social-row">
-                        <div class="social-icon" style="background: #ffffff; padding: 6px;">
-                            <svg viewBox="0 0 24 24" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                                <path fill="#EA4335" d="M12 2v7h7c0-3.87-3.13-7-7-7z"/>
-                                <path fill="#FBBC05" d="M5 9c0 3.87 3.13 7 7 7V2C6.48 2 5 6.48 5 9z"/>
-                                <path fill="#34A853" d="M12 16c3.87 0 7-3.13 7-7h-7v7z"/>
-                                <circle fill="#FFFFFF" cx="12" cy="9" r="2.5"/>
-                            </svg>
-                        </div>
-                        <div class="social-details">
-                            <h3>Konum</h3>
-                            <p>Haritada Aç</p>
-                        </div>
-                    </a>
-                {% endif %}
-
-                {% if musteri.iban %}
-                    <div onclick="copyToClipboard('{{ musteri.iban }}')" class="social-row">
-                        <div class="social-icon icon-iban">
-                            <i class="fa-solid fa-building-columns"></i>
-                        </div>
-                        <div class="social-details">
-                            <h3>IBAN</h3>
-                            <p>{{ musteri.iban }}</p>
-                        </div>
+                        {% if musteri.telefon %}
+                            <a href="tel:{{ musteri.telefon }}" class="save-contact-btn">
+                                <i class="fa-solid fa-user-plus"></i> Rehbere Kaydet
+                            </a>
+                        {% endif %}
                     </div>
-                {% endif %}
-            </div>
+                </div>
 
-            <div class="footer-brand">
-                <div class="pet pet-snake">🐍</div>
-                ((( NFC DIGITAL CARD )))
+                <div class="social-card">
+                    <div class="pet pet-dog">🐕</div>
+
+                    {% if musteri.whatsapp %}
+                        <a href="https://wa.me/{{ musteri.whatsapp }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-whatsapp">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>WhatsApp</h3>
+                                <p>Mesaj Gönder</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.instagram %}
+                        <a href="{{ musteri.instagram }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>Instagram</h3>
+                                <p>Profili Görüntüle</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.facebook %}
+                        <a href="{{ musteri.facebook }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-facebook">
+                                <i class="fa-brands fa-facebook"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>Facebook</h3>
+                                <p>Profili Görüntüle</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.telefon %}
+                        <a href="tel:{{ musteri.telefon }}" class="social-row">
+                            <div class="social-icon icon-phone">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>Telefon</h3>
+                                <p>Ara</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.email %}
+                        <a href="mailto:{{ musteri.email }}" class="social-row">
+                            <div class="social-icon icon-email">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>E-Mail</h3>
+                                <p>Mesaj Gönder</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.google_maps %}
+                        <a href="{{ musteri.google_maps }}" target="_blank" class="social-row">
+                            <div class="social-icon" style="background: #ffffff; padding: 6px;">
+                                <svg viewBox="0 0 24 24" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                                    <path fill="#EA4335" d="M12 2v7h7c0-3.87-3.13-7-7-7z"/>
+                                    <path fill="#FBBC05" d="M5 9c0 3.87 3.13 7 7 7V2C6.48 2 5 6.48 5 9z"/>
+                                    <path fill="#34A853" d="M12 16c3.87 0 7-3.13 7-7h-7v7z"/>
+                                    <circle fill="#FFFFFF" cx="12" cy="9" r="2.5"/>
+                                </svg>
+                            </div>
+                            <div class="social-details">
+                                <h3>Konum</h3>
+                                <p>Haritada Aç</p>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                    {% if musteri.iban %}
+                        <div onclick="copyToClipboard('{{ musteri.iban }}')" class="social-row">
+                            <div class="social-icon icon-iban">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3>IBAN</h3>
+                                <p>{{ musteri.iban }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="footer-brand">
+                    <div class="pet pet-snake">🐍</div>
+                    ((( NFC DIGITAL CARD )))
+                </div>
             </div>
         </div>
     </div>
@@ -501,6 +511,7 @@
     <div id="toast">✓ IBAN Panoya Kopyalandı!</div>
 
     <script>
+        // IBAN Kopyalama
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(function() {
                 var toast = document.getElementById("toast");
@@ -512,6 +523,83 @@
                 console.error('Kopyalanamadı: ', err);
             });
         }
+
+        // Pull to Refresh / Natural Bounce Etkileşimi
+        const scrollArea = document.getElementById('scroll-area');
+        const contentArea = document.getElementById('content-area');
+        const ptrIndicator = document.querySelector('.ptr-indicator');
+        const ptrIcon = ptrIndicator.querySelector('i');
+
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+        
+        const REFRESH_THRESHOLD = 75; // Yenilenmenin tetikleneceği pixel sınırı
+        const RESISTANCE = 0.4;       // Fiziksel direnç oranı (daha düşük değer daha sert yaylanma)
+
+        scrollArea.addEventListener('touchstart', (e) => {
+            // Sadece en üstte iken harekete izin ver
+            if (scrollArea.scrollTop <= 0) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+                contentArea.style.transition = 'none'; // Çekerken anlık takip için animasyonu kapat
+            }
+        }, { passive: true });
+
+        scrollArea.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+
+            const y = e.touches[0].clientY;
+            const dy = y - startY;
+
+            // Sadece aşağı doğru çekiyorsa
+            if (dy > 0 && scrollArea.scrollTop <= 0) {
+                if (e.cancelable) e.preventDefault(); // Varsayılan kaydırma bozulmasını önle
+                
+                currentY = dy * RESISTANCE;
+                
+                // İçeriği aşağı kaydır
+                contentArea.style.transform = `translateY(${currentY}px)`;
+                
+                // İkonu döndür ve görünür kıl
+                const progress = Math.min(currentY / REFRESH_THRESHOLD, 1);
+                ptrIndicator.style.opacity = progress;
+                ptrIcon.style.transform = `rotate(${progress * 180}deg)`;
+
+                if (currentY >= REFRESH_THRESHOLD) {
+                    ptrIndicator.style.color = '#ffffff'; // Sınırı geçince ikon parlak olur
+                } else {
+                    ptrIndicator.style.color = 'rgba(255, 255, 255, 0.6)';
+                }
+            }
+        }, { passive: false });
+
+        scrollArea.addEventListener('touchend', () => {
+            if (!isPulling) return;
+            isPulling = false;
+
+            // Doğal geri dönüş eğrisi
+            contentArea.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
+
+            if (currentY >= REFRESH_THRESHOLD) {
+                // Yenileme durumu: Sabitle ve sayfayı yenile
+                contentArea.style.transform = `translateY(${REFRESH_THRESHOLD / 2}px)`;
+                ptrIcon.classList.add('fa-spin');
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 600);
+            } else {
+                // Sınır geçilmediyse geri yaylandır (Snap back)
+                contentArea.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    ptrIndicator.style.opacity = 0;
+                    ptrIcon.style.transform = 'rotate(0deg)';
+                }, 300);
+            }
+            
+            currentY = 0;
+        });
     </script>
 </body>
 </html>
