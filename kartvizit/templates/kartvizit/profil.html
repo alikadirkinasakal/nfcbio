@@ -417,72 +417,44 @@
                 <div class="social-card">
                     <div class="pet pet-dog">🐕</div>
 
-                    
-
-                  
-                    
-              
-
-                
                     <!-- Telefonlar -->
                     {% for item in musteri.telefonlar.all %}
                         <a href="tel:{{ item.telefon }}" class="social-row">
                             <div class="social-icon icon-phone"><i class="fa-solid fa-phone"></i></div>
-                            <div class="social-details"><h3>Telefon</h3><p>{{ item.telefon }}</p></div>
+                            <div class="social-details"><h3>Telefon</h3><p>{{ item.telefon }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </a>
                     {% endfor %}
 
                     <!-- KAMPANYA / DUYURU BLOĞU -->
-<!-- KAMPANYA / DUYURU (ORİJİNAL BOYUT VE OVALLİKTE GÖKKUŞAĞI) -->
-<!-- KAMPANYA / DUYURU (KUSURSUZ HİZA VE UYUM) -->
-{% for item in musteri.kampanyalar.all %}
-    <div class="social-row campaign-row">
-        
-        <!-- İkon (Telefon butonu ile aynı yeşil tonu) -->
-        <div class="social-icon" style="background: #25D366; color: #ffffff;">
-            <i class="fa-solid fa-bullhorn"></i>
-        </div>
-        
-        <!-- Metinler -->
-        <div class="social-details">
-            <h3 style="background: linear-gradient(to right, red, orange, yellow, green, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold; margin: 0;">Duyuru</h3>
-            <!-- Açıklama rengi karanlık temaya uygun hale getirildi -->
-            <p style="color: #c4c4c4; margin: 3px 0 0 0;">{{ item.metin }}</p>
-        </div>
-    </div>
+                    {% for item in musteri.kampanyalar.all %}
+                        <div class="social-row campaign-row">
+                            <div class="social-icon" style="background: #25D366; color: #ffffff;">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <div class="social-details">
+                                <h3 style="background: linear-gradient(to right, red, orange, yellow, green, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold; margin: 0;">Duyuru</h3>
+                                <p style="color: #c4c4c4; margin: 3px 0 0 0;">{{ item.metin }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p>
+                            </div>
+                        </div>
 
-    <!-- Hizayı ve ovalliği bozmayan dış gökkuşağı çerçevesi -->
-    <style>
-        .campaign-row {
-            position: relative;
-            z-index: 1;
-        }
-        .campaign-row::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 24px; /* Telefon butonuyla aynı ovallik */
-            padding: 2px; /* Gökkuşağı kalınlığı */
-            background: linear-gradient(to right, red, orange, yellow, green, blue, violet);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            z-index: -1;
-            pointer-events: none;
-            animation: rainbow-border 5s linear infinite;
-        }
-        @keyframes rainbow-border {
-            100% { filter: hue-rotate(360deg); }
-        }
-    </style>
-{% endfor %}
-
+                        <style>
+                            .campaign-row { position: relative; z-index: 1; }
+                            .campaign-row::before {
+                                content: ""; position: absolute; inset: 0; border-radius: 24px; padding: 2px;
+                                background: linear-gradient(to right, red, orange, yellow, green, blue, violet);
+                                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                                -webkit-mask-composite: xor; mask-composite: exclude; z-index: -1; pointer-events: none;
+                                animation: rainbow-border 5s linear infinite;
+                            }
+                            @keyframes rainbow-border { 100% { filter: hue-rotate(360deg); } }
+                        </style>
+                    {% endfor %}
 
                     <!-- WhatsApplar -->
                     {% for item in musteri.whatsapplar.all %}
                         <a href="{{ item.get_url }}" target="_blank" class="social-row">
                             <div class="social-icon icon-whatsapp"><i class="fa-brands fa-whatsapp"></i></div>
-                            <div class="social-details"><h3>WhatsApp</h3><p>Mesaj Gönder</p></div>
+                            <div class="social-details"><h3>WhatsApp</h3><p>{{ item.whatsapp }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </a>
                     {% endfor %}
 
@@ -490,58 +462,55 @@
                     {% for item in musteri.emailler.all %}
                         <a href="mailto:{{ item.email }}" class="social-row">
                             <div class="social-icon icon-email"><i class="fa-solid fa-envelope"></i></div>
-                            <div class="social-details"><h3>E-Mail</h3><p>{{ item.email }}</p></div>
+                            <div class="social-details"><h3>E-Mail</h3><p>{{ item.email }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </a>
                     {% endfor %}
+
                     <!-- Instagramlar -->
                     {% for item in musteri.instagramlar.all %}
-    <a href="{{ item.get_url }}" target="_blank" class="social-row">
-        <div class="social-icon icon-instagram"><i class="fa-brands fa-instagram"></i></div>
-        <div class="social-details">
-            <h3>Instagram</h3>
-            <p>@{{ item.instagram }}</p>
-        </div>
-    </a>
-{% endfor %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-instagram"><i class="fa-brands fa-instagram"></i></div>
+                            <div class="social-details"><h3>Instagram</h3><p>@{{ item.instagram }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
+                        </a>
+                    {% endfor %}
 
+                    <!-- TikToklar -->
+                    {% for item in musteri.tiktoklar.all %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon" style="background: #000000; color: #ffffff;"><i class="fa-brands fa-tiktok"></i></div>
+                            <div class="social-details"><h3>TikTok</h3><p>Profili Görüntüle{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
+                        </a>
+                    {% endfor %}
 
-                      {% for item in musteri.tiktoklar.all %}
-    <a href="{{ item.get_url }}" target="_blank" class="social-row">
-        <div class="social-icon" style="background: #000000; color: #ffffff;"><i class="fa-brands fa-tiktok"></i></div>
-        <div class="social-details"><h3>TikTok</h3><p>Profili Görüntüle</p></div>
-    </a>
-{% endfor %}
-
-
+                    <!-- Snapchatler -->
                     {% for item in musteri.snapchatler.all %}
-    <a href="{{ item.get_url }}" target="_blank" class="social-row">
-        <div class="social-icon" style="background: #FFFC00; color: #000000;"><i class="fa-brands fa-snapchat"></i></div>
-        <div class="social-details"><h3>Snapchat</h3><p>Profili Görüntüle</p></div>
-    </a>
-{% endfor %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon" style="background: #FFFC00; color: #000000;"><i class="fa-brands fa-snapchat"></i></div>
+                            <div class="social-details"><h3>Snapchat</h3><p>Profili Görüntüle{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
+                        </a>
+                    {% endfor %}
 
                     <!-- Web Sitesi -->
-{% for item in musteri.websiteler.all %}
-    <a href="{{ item.get_url }}" target="_blank" class="social-row">
-        <div class="social-icon" style="background: #4285F4; color: #ffffff;"><i class="fa-solid fa-globe"></i></div>
-        <div class="social-details"><h3>Web Sitesi</h3><p>Siteyi Ziyaret Et</p></div>
-    </a>
-{% endfor %}
+                    {% for item in musteri.websiteler.all %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon" style="background: #4285F4; color: #ffffff;"><i class="fa-solid fa-globe"></i></div>
+                            <div class="social-details"><h3>Web Sitesi</h3><p>Siteyi Ziyaret Et{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
+                        </a>
+                    {% endfor %}
 
-<!-- Sahibinden -->
-{% for item in musteri.sahibindenler.all %}
-    <a href="{{ item.get_url }}" target="_blank" class="social-row">
-        <div class="social-icon" style="background: #FFE100; color: #000000;"><i class="fa-solid fa-store"></i></div>
-        <div class="social-details"><h3>Sahibinden</h3><p>Mağazayı Görüntüle</p></div>
-    </a>
-{% endfor %}
+                    <!-- Sahibinden -->
+                    {% for item in musteri.sahibindenler.all %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon" style="background: #FFE100; color: #000000;"><i class="fa-solid fa-store"></i></div>
+                            <div class="social-details"><h3>Sahibinden</h3><p>Mağazayı Görüntüle{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
+                        </a>
+                    {% endfor %}
 
-
-<!-- Facebooklar -->
+                    <!-- Facebooklar -->
                     {% for item in musteri.facebooklar.all %}
                         <a href="{{ item.get_url }}" target="_blank" class="social-row">
                             <div class="social-icon icon-facebook"><i class="fa-brands fa-facebook"></i></div>
-                            <div class="social-details"><h3>Facebook</h3><p>Profili Görüntüle</p></div>
+                            <div class="social-details"><h3>Facebook</h3><p>Profili Görüntüle{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </a>
                     {% endfor %}
 
@@ -557,7 +526,7 @@
                                     <circle fill="#FFFFFF" cx="12" cy="9" r="2.5"/>
                                 </svg>
                             </div>
-                            <div class="social-details"><h3>Konum</h3><p>Haritada Aç</p></div>
+                            <div class="social-details"><h3>Konum</h3><p>Haritada Aç{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </a>
                     {% endfor %}
 
@@ -565,7 +534,7 @@
                     {% for item in musteri.ibanlar.all %}
                         <div onclick="copyToClipboard('{{ item.iban }}')" class="social-row">
                             <div class="social-icon icon-iban"><i class="fa-solid fa-building-columns"></i></div>
-                            <div class="social-details"><h3>IBAN</h3><p>{{ item.iban }}</p></div>
+                            <div class="social-details"><h3>IBAN</h3><p>{{ item.iban }}{% if item.isim %} ~{{ item.isim }}{% endif %}</p></div>
                         </div>
                     {% endfor %}
                 </div>
