@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+qdzi!v9o-m)f^wxbd#gcwccs)p)t6y11h#nz30ruw#5j%d%q*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nfcbio.pythonanywhere.com']
+ALLOWED_HOSTS = ['nfcbio.pythonanywhere.com', '127.0.0.1' , 'localhost']
 
 
 # Application definition

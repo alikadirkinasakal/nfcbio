@@ -417,30 +417,13 @@
                 <div class="social-card">
                     <div class="pet pet-dog">🐕</div>
 
-                    <!-- WhatsApplar -->
-                    {% for item in musteri.whatsapplar.all %}
-                        <a href="https://wa.me/{{ item.whatsapp }}" target="_blank" class="social-row">
-                            <div class="social-icon icon-whatsapp"><i class="fa-brands fa-whatsapp"></i></div>
-                            <div class="social-details"><h3>WhatsApp</h3><p>Mesaj Gönder</p></div>
-                        </a>
-                    {% endfor %}
+                    
 
-                    <!-- Instagramlar -->
-                    {% for item in musteri.instagramlar.all %}
-                        <a href="{{ item.instagram }}" target="_blank" class="social-row">
-                            <div class="social-icon icon-instagram"><i class="fa-brands fa-instagram"></i></div>
-                            <div class="social-details"><h3>Instagram</h3><p>Profili Görüntüle</p></div>
-                        </a>
-                    {% endfor %}
+                  
+                    
+              
 
-                    <!-- Facebooklar -->
-                    {% for item in musteri.facebooklar.all %}
-                        <a href="{{ item.facebook }}" target="_blank" class="social-row">
-                            <div class="social-icon icon-facebook"><i class="fa-brands fa-facebook"></i></div>
-                            <div class="social-details"><h3>Facebook</h3><p>Profili Görüntüle</p></div>
-                        </a>
-                    {% endfor %}
-
+                
                     <!-- Telefonlar -->
                     {% for item in musteri.telefonlar.all %}
                         <a href="tel:{{ item.telefon }}" class="social-row">
@@ -449,11 +432,96 @@
                         </a>
                     {% endfor %}
 
+                    <!-- KAMPANYA / DUYURU BLOĞU -->
+<!-- KAMPANYA / DUYURU (ORİJİNAL BOYUT VE OVALLİKTE GÖKKUŞAĞI) -->
+{% for item in musteri.kampanyalar.all %}
+    <div class="social-row" style="border: 2px solid transparent; background-image: linear-gradient(var(--card-bg, #fff), var(--card-bg, #fff)), linear-gradient(to right, red, orange, yellow, green, blue, violet); background-origin: border-box; background-clip: padding-box, border-box; animation: rainbow-border 5s linear infinite;">
+        
+        <!-- İkon -->
+        <div class="social-icon" style="background: #ff4757; color: #ffffff;">
+            <i class="fa-solid fa-bullhorn"></i>
+        </div>
+        
+        <!-- Metinler -->
+        <div class="social-details">
+            <h3 style="background: linear-gradient(to right, red, orange, yellow, green, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;">Duyuru</h3>
+            <p style="color: #000000;">{{ item.metin }}</p>
+        </div>
+    </div>
+
+    <!-- Animasyon -->
+    <style>
+        @keyframes rainbow-border {
+            100% { filter: hue-rotate(360deg); }
+        }
+    </style>
+{% endfor %}
+
+
+                    <!-- WhatsApplar -->
+                    {% for item in musteri.whatsapplar.all %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-whatsapp"><i class="fa-brands fa-whatsapp"></i></div>
+                            <div class="social-details"><h3>WhatsApp</h3><p>Mesaj Gönder</p></div>
+                        </a>
+                    {% endfor %}
+
                     <!-- E-Mailler -->
                     {% for item in musteri.emailler.all %}
                         <a href="mailto:{{ item.email }}" class="social-row">
                             <div class="social-icon icon-email"><i class="fa-solid fa-envelope"></i></div>
                             <div class="social-details"><h3>E-Mail</h3><p>{{ item.email }}</p></div>
+                        </a>
+                    {% endfor %}
+                    <!-- Instagramlar -->
+                    {% for item in musteri.instagramlar.all %}
+    <a href="{{ item.get_url }}" target="_blank" class="social-row">
+        <div class="social-icon icon-instagram"><i class="fa-brands fa-instagram"></i></div>
+        <div class="social-details">
+            <h3>Instagram</h3>
+            <p>@{{ item.instagram }}</p>
+        </div>
+    </a>
+{% endfor %}
+
+
+                      {% for item in musteri.tiktoklar.all %}
+    <a href="{{ item.get_url }}" target="_blank" class="social-row">
+        <div class="social-icon" style="background: #000000; color: #ffffff;"><i class="fa-brands fa-tiktok"></i></div>
+        <div class="social-details"><h3>TikTok</h3><p>Profili Görüntüle</p></div>
+    </a>
+{% endfor %}
+
+
+                    {% for item in musteri.snapchatler.all %}
+    <a href="{{ item.get_url }}" target="_blank" class="social-row">
+        <div class="social-icon" style="background: #FFFC00; color: #000000;"><i class="fa-brands fa-snapchat"></i></div>
+        <div class="social-details"><h3>Snapchat</h3><p>Profili Görüntüle</p></div>
+    </a>
+{% endfor %}
+
+                    <!-- Web Sitesi -->
+{% for item in musteri.websiteler.all %}
+    <a href="{{ item.get_url }}" target="_blank" class="social-row">
+        <div class="social-icon" style="background: #4285F4; color: #ffffff;"><i class="fa-solid fa-globe"></i></div>
+        <div class="social-details"><h3>Web Sitesi</h3><p>Siteyi Ziyaret Et</p></div>
+    </a>
+{% endfor %}
+
+<!-- Sahibinden -->
+{% for item in musteri.sahibindenler.all %}
+    <a href="{{ item.get_url }}" target="_blank" class="social-row">
+        <div class="social-icon" style="background: #FFE100; color: #000000;"><i class="fa-solid fa-store"></i></div>
+        <div class="social-details"><h3>Sahibinden</h3><p>Mağazayı Görüntüle</p></div>
+    </a>
+{% endfor %}
+
+
+<!-- Facebooklar -->
+                    {% for item in musteri.facebooklar.all %}
+                        <a href="{{ item.get_url }}" target="_blank" class="social-row">
+                            <div class="social-icon icon-facebook"><i class="fa-brands fa-facebook"></i></div>
+                            <div class="social-details"><h3>Facebook</h3><p>Profili Görüntüle</p></div>
                         </a>
                     {% endfor %}
 
