@@ -35,6 +35,13 @@ class MusteriWhatsapp(models.Model):
     musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='whatsapplar')
     whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Numarası", blank=True, null=True)
 
+    def get_url(self):
+        if not self.whatsapp:
+            return "#"
+        # Numaradaki boşlukları ve gereksiz karakterleri temizler
+        temiz_numara = self.whatsapp.replace(" ", "").replace("+", "").replace("-", "")
+        return f"https://wa.me/{temiz_numara}"
+    
 class MusteriEmail(models.Model):
     musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='emailler')
     email = models.EmailField(verbose_name="E-Posta Adresi", blank=True, null=True)
