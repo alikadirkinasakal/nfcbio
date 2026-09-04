@@ -434,23 +434,43 @@
 
                     <!-- KAMPANYA / DUYURU BLOĞU -->
 <!-- KAMPANYA / DUYURU (ORİJİNAL BOYUT VE OVALLİKTE GÖKKUŞAĞI) -->
+<!-- KAMPANYA / DUYURU (KUSURSUZ HİZA VE UYUM) -->
 {% for item in musteri.kampanyalar.all %}
-    <div class="social-row" style="border: 2px solid transparent; background-image: linear-gradient(var(--card-bg, #fff), var(--card-bg, #fff)), linear-gradient(to right, red, orange, yellow, green, blue, violet); background-origin: border-box; background-clip: padding-box, border-box; animation: rainbow-border 5s linear infinite;">
+    <div class="social-row campaign-row">
         
-        <!-- İkon -->
-        <div class="social-icon" style="background: #ff4757; color: #ffffff;">
+        <!-- İkon (Telefon butonu ile aynı yeşil tonu) -->
+        <div class="social-icon" style="background: #25D366; color: #ffffff;">
             <i class="fa-solid fa-bullhorn"></i>
         </div>
         
         <!-- Metinler -->
         <div class="social-details">
-            <h3 style="background: linear-gradient(to right, red, orange, yellow, green, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;">Duyuru</h3>
-            <p style="color: #000000;">{{ item.metin }}</p>
+            <h3 style="background: linear-gradient(to right, red, orange, yellow, green, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold; margin: 0;">Duyuru</h3>
+            <!-- Açıklama rengi karanlık temaya uygun hale getirildi -->
+            <p style="color: #c4c4c4; margin: 3px 0 0 0;">{{ item.metin }}</p>
         </div>
     </div>
 
-    <!-- Animasyon -->
+    <!-- Hizayı ve ovalliği bozmayan dış gökkuşağı çerçevesi -->
     <style>
+        .campaign-row {
+            position: relative;
+            z-index: 1;
+        }
+        .campaign-row::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 24px; /* Telefon butonuyla aynı ovallik */
+            padding: 2px; /* Gökkuşağı kalınlığı */
+            background: linear-gradient(to right, red, orange, yellow, green, blue, violet);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1;
+            pointer-events: none;
+            animation: rainbow-border 5s linear infinite;
+        }
         @keyframes rainbow-border {
             100% { filter: hue-rotate(360deg); }
         }
