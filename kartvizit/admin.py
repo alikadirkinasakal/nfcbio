@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
-    Musteri, MusteriTelefon, MusteriKampanya, MusteriWhatsapp, 
-    MusteriEmail, MusteriInstagram, MusteriTikTok, MusteriSnapchat, MusteriWebsite, 
+    Musteri, MusteriTelefon, MusteriKampanya, MusteriMenu, MusteriWhatsapp, 
+    MusteriEmail, MusteriInstagram, MusteriLinkedln,MusteriTikTok, MusteriSnapchat, MusteriWebsite, 
     MusteriSahibinden, MusteriFacebook, 
     MusteriGoogleMaps, MusteriIban, 
 )
@@ -14,6 +14,10 @@ class MusteriKampanyaInline(admin.TabularInline):
     model = MusteriKampanya
     extra = 2
 
+class MenuInline(admin.TabularInline):
+    model = MusteriMenu
+    extra = 1
+
 class WhatsappInline(admin.TabularInline):
     model = MusteriWhatsapp
     extra = 6
@@ -24,6 +28,10 @@ class EmailInline(admin.TabularInline):
 
 class InstagramInline(admin.TabularInline):
     model = MusteriInstagram
+    extra = 1
+
+class LinkedlnInline(admin.TabularInline):
+    model = MusteriLinkedln
     extra = 1
 
 class MusteriTikTokInline(admin.TabularInline):
@@ -60,9 +68,11 @@ class MusteriAdmin(admin.ModelAdmin):
     inlines = [
         TelefonInline,
         MusteriKampanyaInline, 
+        MenuInline,
         WhatsappInline, 
         EmailInline, 
         InstagramInline,
+        LinkedlnInline,
         MusteriTikTokInline, 
         MusteriSnapchatInline, 
         MusteriWebsiteInline, 

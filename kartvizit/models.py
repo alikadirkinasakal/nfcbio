@@ -31,7 +31,12 @@ class MusteriKampanya(models.Model):
 
     def __str__(self):
         return f"{self.musteri.ad_soyad} - {self.metin}"
-   
+
+class MusteriMenu(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='menuler')
+    menu_gorseli = models.ImageField(upload_to='menuler/', verbose_name="Menü Görseli")
+    isim = models.CharField(max_length=50, verbose_name="Buton Yazısı (Örn: Menü İçin Basınız)", default="Menü İçin Basınız")
+
 class MusteriWhatsapp(models.Model):
     musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='whatsapplar')
     whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Numarası", blank=True, null=True)
@@ -60,6 +65,20 @@ class MusteriInstagram(models.Model):
         if val.startswith('http://') or val.startswith('https://'):
             return val
         return f"https://instagram.com/{val.lstrip('@')}"
+    
+class MusteriLinkedln(models.Model):
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='linkedlnler')
+    linkedln = models.CharField(max_length=255, verbose_name="Linkedln Kullanıcı Adı veya Linki", blank=True, null=True)
+    isim = models.CharField(max_length=50, verbose_name="Özel İsim", blank=True, null=True)
+
+    def get_url(self):
+        if not self.linkedln:
+            return "#"
+        val = self.linkedln.strip()
+        if val.startswith('http://') or val.startswith('https://'):
+            return val
+        # Yönlendireceği asıl site adresi (linkedin.com) aynı kalıyor
+        return f"https://linkedin.com/in/{val.lstrip('@')}"
     
 class MusteriTikTok(models.Model):
     musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='tiktoklar')
