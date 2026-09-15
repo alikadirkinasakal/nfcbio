@@ -490,10 +490,10 @@
                     {% endfor %}
 
                     <!-- Menü Butonu -->
-{% for item in musteri.menuler.all %}
+{% for item in musteri.fiyatlistesiler.all %}
     <div onclick="menuyuAc('{{ item.menu_gorseli.url }}')" class="social-row">
         <div class="social-icon" style="background: #333333; color: #ffffff;"><i class="fa-solid fa-utensils"></i></div>
-        <div class="social-details"><h3>Menü</h3><p>{{ item.isim }}</p></div>
+        <div class="social-details"><h3>Fiyat Listesi</h3><p>{{ item.isim }}</p></div>
     </div>
 {% endfor %}
 

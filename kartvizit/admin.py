@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Musteri, MusteriTelefon, MusteriKampanya, MusteriMenu, MusteriWhatsapp, 
+    Musteri, MusteriTelefon, MusteriKampanya, MusteriFiyatlistesi, MusteriWhatsapp, 
     MusteriEmail, MusteriInstagram, MusteriLinkedln,MusteriTikTok, MusteriSnapchat, MusteriWebsite, 
     MusteriSahibinden, MusteriFacebook, 
     MusteriGoogleMaps, MusteriIban, 
@@ -14,8 +14,8 @@ class MusteriKampanyaInline(admin.TabularInline):
     model = MusteriKampanya
     extra = 2
 
-class MenuInline(admin.TabularInline):
-    model = MusteriMenu
+class FiyatlistesiInline(admin.TabularInline):
+    model = MusteriFiyatlistesi
     extra = 1
 
 class WhatsappInline(admin.TabularInline):
@@ -68,7 +68,7 @@ class MusteriAdmin(admin.ModelAdmin):
     inlines = [
         TelefonInline,
         MusteriKampanyaInline, 
-        MenuInline,
+        FiyatlistesiInline,
         WhatsappInline, 
         EmailInline, 
         InstagramInline,

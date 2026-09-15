@@ -32,11 +32,22 @@ class MusteriKampanya(models.Model):
     def __str__(self):
         return f"{self.musteri.ad_soyad} - {self.metin}"
 
-class MusteriMenu(models.Model):
-    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='menuler')
-    menu_gorseli = models.ImageField(upload_to='menuler/', verbose_name="Menü Görseli")
-    isim = models.CharField(max_length=50, verbose_name="Buton Yazısı (Örn: Menü İçin Basınız)", default="Menü İçin Basınız")
+class MusteriFiyatlistesi(models.Model):
+    # related_name kısmını HTML ile uyumlu olması için 'fiyatlisteleri' yaptık
+    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='fiyatlisteleri')
+    fiyat_gorseli = models.ImageField(upload_to='fiyat_listeleri/', verbose_name="Fiyat Listesi Görseli")
+    isim = models.CharField(max_length=50, verbose_name="Buton Yazısı (Örn: Fiyat Listesi)", default="Fiyat Listesi")
 
+    # Resim hızlı açılsın diye boyut küçültme/sıkıştırma kodu
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.fiyat_gorseli:
+            img = Image.open(self.fiyat_gorseli.path)
+            if img.height > 1600 or img.width > 1600:
+                output_size = (1600, 1600)
+                img.thumbnail(output_size)
+                img.save(self.fiyat_gorseli.path, quality=75)
+                
 class MusteriWhatsapp(models.Model):
     musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name='whatsapplar')
     whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Numarası", blank=True, null=True)
