@@ -489,11 +489,16 @@
                         </style>
                     {% endfor %}
 
-                    <!-- Menü Butonu -->
-{% for item in musteri.fiyatlistesiler.all %}
-    <div onclick="menuyuAc('{{ item.menu_gorseli.url }}')" class="social-row">
-        <div class="social-icon" style="background: #333333; color: #ffffff;"><i class="fa-solid fa-utensils"></i></div>
-        <div class="social-details"><h3>Fiyat Listesi</h3><p>{{ item.isim }}</p></div>
+                   <!-- Fiyat Listesi Butonu -->
+{% for item in musteri.fiyatlisteleri.all %}
+    <div onclick="menuyuAc('{{ item.fiyat_gorseli.url }}')" class="social-row">
+        <div class="social-icon" style="background: #333333; color: #ffffff;">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+        <div class="social-details">
+            <h3>Fiyat Listesi</h3>
+            <p>{{ item.isim }}</p>
+        </div>
     </div>
 {% endfor %}
 
